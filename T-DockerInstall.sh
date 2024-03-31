@@ -1,3 +1,7 @@
+######README#######
+#chmod +x $(DockerInstall)
+###################
+
 sudo apt update
 
 #install some prerequisite packages.
