@@ -12,7 +12,7 @@ network:
       addresses: [192.168.122.0/24]  #192.168.122.61-65
       gateway4: 192.168.122.1  # IP
       nameservers:
-        addresses: [8.8.8.8, 8.8.4.4]  # DNS
+        addresses: [1.1.1.1, 8.8.8.8]  # DNS
   version: 2
 
 EOF
