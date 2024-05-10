@@ -28,4 +28,8 @@ sudo usermod -aG docker ubuntu
 
 docker run hello-world
 
+usermod -aG docker ${USER}
+
+su - ${USER}
+
 sudo systemctl status docker
