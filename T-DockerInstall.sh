@@ -24,6 +24,8 @@ usermod -aG docker ubuntu
 
 docker run hello-world
 
+sudo apt install docker-compose
+
 usermod -aG docker ${USER}
 
 su - ${USER}
