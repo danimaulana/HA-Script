@@ -20,9 +20,6 @@ apt-get update
 # Install Docker packages
 apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
 
-# Add the current user to the docker group
-usermod -aG docker ${USER}
-
 # Verify Docker installation
 docker run hello-world
 
