@@ -8,23 +8,36 @@ services:
       - "80:80"
     environment:
       WORDPRESS_DB_HOST: db
-      WORDPRESS_DB_USER: example_user
-      WORDPRESS_DB_PASSWORD: example_password
-      WORDPRESS_DB_NAME: example_db
+      WORDPRESS_DB_USER: wp_user
+      WORDPRESS_DB_PASSWORD: secure_password123
+      WORDPRESS_DB_NAME: wp_database
     volumes:
       - ./wp-content:/var/www/html/wp-content
+    deploy:
+      replicas: 5  # Misalnya, 5 replika WordPress
+      update_config:
+        parallelism: 2
+        delay: 10s
+      restart_policy:
+        condition: on-failure
 
   db:
     image: mysql:5.7
     restart: always
     environment:
-      MYSQL_DATABASE: example_db
-      MYSQL_USER: example_user
-      MYSQL_PASSWORD: example_password
+      MYSQL_DATABASE: wp_database
+      MYSQL_USER: wp_user
+      MYSQL_PASSWORD: secure_password123
       MYSQL_RANDOM_ROOT_PASSWORD: '1'
     volumes:
       - db_data:/var/lib/mysql
+    deploy:
+      replicas: 5  # Misalnya, 5 replika MySQL
+      update_config:
+        parallelism: 1
+        delay: 10s
+      restart_policy:
+        condition: on-failure
 
 volumes:
   db_data:
-
