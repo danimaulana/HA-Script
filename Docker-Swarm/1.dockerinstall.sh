@@ -36,3 +36,6 @@ sudo usermod -aG docker $USER
 
 # Check Docker status
 sudo systemctl status docker
+
+# Exit SSH session
+exit
