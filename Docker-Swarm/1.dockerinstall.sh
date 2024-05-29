@@ -35,7 +35,9 @@ sudo apt install -y docker-compose\n\n
 # Add the current user to the docker group\n
 sudo usermod -aG docker \$USER\n\n
 # Check Docker status\n
-sudo systemctl status docker\n"
+sudo systemctl status docker\n
+# Exit SSH session
+exit\n"
 
 # Menjalankan instalasi Docker pada setiap node
 for ip in "${NODE_IPS[@]}"; do
