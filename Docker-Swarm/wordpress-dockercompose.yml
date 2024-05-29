@@ -9,12 +9,12 @@ services:
     environment:
       WORDPRESS_DB_HOST: db
       WORDPRESS_DB_USER: wp_user
-      WORDPRESS_DB_PASSWORD: secure_password123
+      WORDPRESS_DB_PASSWORD: wp_pw
       WORDPRESS_DB_NAME: wp_database
     volumes:
       - ./wp-content:/var/www/html/wp-content
     deploy:
-      replicas: 5  # Misalnya, 5 replika WordPress
+      replicas: 5  # 5 replika WordPress
       update_config:
         parallelism: 2
         delay: 10s
@@ -27,12 +27,12 @@ services:
     environment:
       MYSQL_DATABASE: wp_database
       MYSQL_USER: wp_user
-      MYSQL_PASSWORD: secure_password123
+      MYSQL_PASSWORD: wp_pw
       MYSQL_RANDOM_ROOT_PASSWORD: '1'
     volumes:
       - db_data:/var/lib/mysql
     deploy:
-      replicas: 5  # Misalnya, 5 replika MySQL
+      replicas: 5  # 5 replika MySQL
       update_config:
         parallelism: 1
         delay: 10s
