@@ -1,43 +1,47 @@
-version: '3.8'
+version: '3.7'
 
 services:
-  wordpress:
-    image: wordpress:latest
-    restart: always
-    ports:
-      - "80:80"
-    environment:
-      WORDPRESS_DB_HOST: db
-      WORDPRESS_DB_USER: wp_user
-      WORDPRESS_DB_PASSWORD: wp_pw
-      WORDPRESS_DB_NAME: wp_database
-    volumes:
-      - ./wp-content:/var/www/html/wp-content
-    deploy:
-      replicas: 5  # 5 replika WordPress
-      update_config:
-        parallelism: 2
-        delay: 10s
-      restart_policy:
-        condition: on-failure
-
   db:
     image: mysql:5.7
-    restart: always
-    environment:
-      MYSQL_DATABASE: wp_database
-      MYSQL_USER: wp_user
-      MYSQL_PASSWORD: wp_pw
-      MYSQL_RANDOM_ROOT_PASSWORD: '1'
-    volumes:
-      - db_data:/var/lib/mysql
     deploy:
-      replicas: 5  # 5 replika MySQL
-      update_config:
-        parallelism: 1
-        delay: 10s
-      restart_policy:
-        condition: on-failure
+      replicas: 2
+      placement:
+        constraints:
+          - node.role == manager
+    environment:
+      MYSQL_ROOT_PASSWORD: example
+      MYSQL_DATABASE: wordpress
+      MYSQL_USER: wordpress
+      MYSQL_PASSWORD: wordpress
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - wordpress
+
+  wordpress:
+    image: wordpress:latest
+    deploy:
+      replicas: 3
+      placement:
+        constraints:
+          - node.role == manager
+    environment:
+      WORDPRESS_DB_HOST: db:3306
+      WORDPRESS_DB_USER: wordpress
+      WORDPRESS_DB_PASSWORD: wordpress
+      WORDPRESS_DB_NAME: wordpress
+    volumes:
+      - wordpress_data:/var/www/html
+    ports:
+      - "8000:80"
+    networks:
+      - wordpress
 
 volumes:
-  db_data:
+  mysql_data:
+  wordpress_data:
+
+networks:
+  wordpress:
+    driver: overlay
+
