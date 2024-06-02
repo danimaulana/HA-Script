@@ -4,44 +4,39 @@ services:
   db:
     image: mysql:5.7
     deploy:
-      replicas: 2
-      placement:
-        constraints:
-          - node.role == manager
+      mode: replicated
+      replicas: 3  # Menentukan jumlah replika untuk service 'db'
     environment:
       MYSQL_ROOT_PASSWORD: example
       MYSQL_DATABASE: wordpress
       MYSQL_USER: wordpress
       MYSQL_PASSWORD: wordpress
     volumes:
-      - mysql_data:/var/lib/mysql
+      - mysql_data:/var/lib/mysql  # Menentukan volume untuk menyimpan data MySQL secara persisten
     networks:
-      - wordpress
+      - wordpress  # Menentukan jaringan yang akan digunakan oleh service 'db'
 
   wordpress:
     image: wordpress:latest
     deploy:
-      replicas: 3
-      placement:
-        constraints:
-          - node.role == manager
+      mode: replicated
+      replicas: 3  # Menentukan jumlah replika untuk service 'wordpress'
     environment:
-      WORDPRESS_DB_HOST: db:3306
-      WORDPRESS_DB_USER: wordpress
-      WORDPRESS_DB_PASSWORD: wordpress
-      WORDPRESS_DB_NAME: wordpress
+      WORDPRESS_DB_HOST: db:3306  # Host dan port database MySQL
+      WORDPRESS_DB_USER: wordpress  # Nama pengguna database
+      WORDPRESS_DB_PASSWORD: wordpress  # Kata sandi untuk pengguna database
+      WORDPRESS_DB_NAME: wordpress  # Nama database yang akan digunakan oleh WordPress
     volumes:
-      - wordpress_data:/var/www/html
+      - wordpress_data:/var/www/html  # Menentukan volume untuk menyimpan data WordPress secara persisten
     ports:
-      - "8000:80"
+      - "8000:80"  # Memetakan port 80 pada container ke port 8000 pada host
     networks:
-      - wordpress
+      - wordpress  # Menentukan jaringan yang akan digunakan oleh service 'wordpress'
 
 volumes:
-  mysql_data:
-  wordpress_data:
+  mysql_data:  # Mendefinisikan volume untuk menyimpan data MySQL
+  wordpress_data:  # Mendefinisikan volume untuk menyimpan data WordPress
 
 networks:
   wordpress:
-    driver: overlay
-
+    driver: overlay  # Menentukan bahwa jaringan menggunakan driver overlay
