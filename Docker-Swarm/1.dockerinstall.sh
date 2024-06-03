@@ -22,12 +22,6 @@ sudo apt-get update
 # Install Docker packages
 sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
 
-# Verify Docker installation
-sudo docker run hello-world
-
-# Remove hello-world image
-sudo docker rmi hello-world
-
 # Install docker-compose
 sudo apt-get install -y docker-compose
 
