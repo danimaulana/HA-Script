@@ -4,39 +4,43 @@ services:
   db:
     image: mysql:5.7
     deploy:
-      mode: replicated
-      replicas: 3  # Menentukan jumlah replika untuk service 'db'
+      replicas: 2
+      placement:
+        constraints:
+          - node.role == manager
     environment:
       MYSQL_ROOT_PASSWORD: example
       MYSQL_DATABASE: wordpress
       MYSQL_USER: wordpress
       MYSQL_PASSWORD: wordpress
     volumes:
-      - mysql_data:/var/lib/mysql  # Menentukan volume untuk menyimpan data MySQL secara persisten
+      - mysql_data:/var/lib/mysql
     networks:
-      - wordpress  # Menentukan jaringan yang akan digunakan oleh service 'db'
+      - wordpress
 
   wordpress:
     image: wordpress:latest
     deploy:
-      mode: replicated
-      replicas: 3  # Menentukan jumlah replika untuk service 'wordpress'
+      replicas: 3
+      placement:
+        constraints:
+          - node.role == manager
     environment:
-      WORDPRESS_DB_HOST: db:3306  # Host dan port database MySQL
-      WORDPRESS_DB_USER: wordpress  # Nama pengguna database
-      WORDPRESS_DB_PASSWORD: wordpress  # Kata sandi untuk pengguna database
-      WORDPRESS_DB_NAME: wordpress  # Nama database yang akan digunakan oleh WordPress
+      WORDPRESS_DB_HOST: db:3306
+      WORDPRESS_DB_USER: wordpress
+      WORDPRESS_DB_PASSWORD: wordpress
+      WORDPRESS_DB_NAME: wordpress
     volumes:
-      - wordpress_data:/var/www/html  # Menentukan volume untuk menyimpan data WordPress secara persisten
+      - wordpress_data:/var/www/html
     ports:
-      - "8000:80"  # Memetakan port 80 pada container ke port 8000 pada host
+      - "8000:80"
     networks:
-      - wordpress  # Menentukan jaringan yang akan digunakan oleh service 'wordpress'
+      - wordpress
 
 volumes:
-  mysql_data:  # Mendefinisikan volume untuk menyimpan data MySQL
-  wordpress_data:  # Mendefinisikan volume untuk menyimpan data WordPress
+  mysql_data:
+  wordpress_data:
 
 networks:
   wordpress:
-    driver: overlay  # Menentukan bahwa jaringan menggunakan driver overlay
+    driver: overlay
