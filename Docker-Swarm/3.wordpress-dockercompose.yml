@@ -4,7 +4,8 @@ services:
   db:
     image: mysql:5.7
     deploy:
-      replicas: 2
+      mode: replicated
+      replicas: 3
       placement:
         constraints:
           - node.role == manager
@@ -21,6 +22,7 @@ services:
   wordpress:
     image: wordpress:latest
     deploy:
+      mode: replicated
       replicas: 3
       placement:
         constraints:
