@@ -1,0 +1,5 @@
+# Query CPU Node (skema waktu 2 menit):
+100 - (avg by (instance) (irate(node_cpu_seconds_total{mode="idle"}[2m])) * 100)
+
+# Query RAM Node (skema waktu 2 menit):
+100 - (avg by (instance) ((node_memory_MemAvailable_bytes{job="node-exporter"} / node_memory_MemTotal_bytes{job="node-exporter"}) * 100))
