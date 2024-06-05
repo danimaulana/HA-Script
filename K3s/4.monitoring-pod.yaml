@@ -1,0 +1,59 @@
+import subprocess
+import time
+from datetime import datetime
+import pytz
+
+# Fungsi untuk melakukan ping ke server
+def ping_server(server):
+    try:
+        output = subprocess.check_output(['ping', '-c', '1', server], stderr=subprocess.STDOUT, universal_newlines=True)
+        return True
+    except subprocess.CalledProcessError:
+        return False
+
+# Fungsi untuk mendapatkan timestamp saat ini dalam zona waktu Indonesia
+def get_current_timestamp():
+    tz = pytz.timezone('Asia/Jakarta')
+    return datetime.now(tz).strftime('%Y-%m-%d %H:%M:%S')
+
+# Fungsi untuk mendapatkan daftar pod saat ini
+def get_current_pods():
+    try:
+        output = subprocess.check_output(['kubectl', 'get', 'pods', '-o', 'wide'], stderr=subprocess.STDOUT, universal_newlines=True)
+        lines = output.strip().split('\n')
+        pod_list = [line.split()[0] for line in lines[1:]]  # Mendapatkan nama pod dari setiap baris (kecuali header)
+        return set(pod_list)
+    except subprocess.CalledProcessError as e:
+        print(f"Error running kubectl: {e.output}")
+        return set()
+
+# Daftar IP server yang akan di-ping
+servers = ['192.168.122.' + str(i) for i in range(61, 66)]
+
+# Status awal node dan pod
+node_statuses = {server: None for server in servers}
+previous_pods = get_current_pods()
+
+while True:
+    # Memeriksa status server
+    for server in servers:
+        current_status = ping_server(server)
+        if current_status != node_statuses[server]:
+            timestamp = get_current_timestamp()
+            if current_status:
+                print(f"[{timestamp}] Node {server} is UP")
+            else:
+                print(f"[{timestamp}] Node {server} is DOWN")
+            node_statuses[server] = current_status
+
+    # Memeriksa pod baru
+    current_pods = get_current_pods()
+    new_pods = current_pods - previous_pods
+    if new_pods:
+        timestamp = get_current_timestamp()
+        for pod in new_pods:
+            print(f"[{timestamp}] New pod detected: {pod}")
+    previous_pods = current_pods
+
+    # Tunggu beberapa detik sebelum melakukan pemeriksaan lagi
+    time.sleep(10)
